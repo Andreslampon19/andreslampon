@@ -1,0 +1,79 @@
+CREATE TABLE Restaurante (
+  id SERIAL PRIMARY KEY,
+  nombre VARCHAR(100),
+  direccion TEXT,
+  telefono VARCHAR(15),
+  logo TEXT,
+  canal_youtube TEXT
+);
+
+CREATE TABLE Platillo (
+  id SERIAL PRIMARY KEY,
+  nombre VARCHAR(100),
+  descripcion TEXT,
+  precio DECIMAL(6,2),
+  foto_url TEXT,
+  disponible BOOLEAN,
+  restaurante_id INTEGER REFERENCES Restaurante(id)
+);
+
+CREATE TABLE PorcionEspecial (
+  id SERIAL PRIMARY KEY,
+  nombre VARCHAR(100),
+  descripcion TEXT,
+  platillo_id INTEGER REFERENCES Platillo(id)
+);
+
+CREATE TABLE Cliente (
+  id SERIAL PRIMARY KEY,
+  nombre VARCHAR(100),
+  email VARCHAR(100),
+  direccion TEXT,
+  telefono VARCHAR(20)
+);
+
+CREATE TABLE Pedido (
+  id SERIAL PRIMARY KEY,
+  cliente_id INTEGER REFERENCES Cliente(id),
+  fecha_pedido TIMESTAMP,
+  fecha_entrega TIMESTAMP,
+  estado VARCHAR(50),
+  tipo_pago VARCHAR(50)
+);
+
+CREATE TABLE DetallePedido (
+  id SERIAL PRIMARY KEY,
+  pedido_id INTEGER REFERENCES Pedido(id),
+  platillo_id INTEGER REFERENCES Platillo(id),
+  cantidad INTEGER,
+  porcion_especial_id INTEGER REFERENCES PorcionEspecial(id)
+);
+
+CREATE TABLE Repartidor (
+  id SERIAL PRIMARY KEY,
+  nombre VARCHAR(100),
+  telefono VARCHAR(20),
+  vehiculo VARCHAR(50)
+);
+
+CREATE TABLE Preparador (
+  id SERIAL PRIMARY KEY,
+  nombre VARCHAR(100),
+  rol VARCHAR(50)
+);
+
+CREATE TABLE Asignacion (
+  id SERIAL PRIMARY KEY,
+  pedido_id INTEGER REFERENCES Pedido(id),
+  preparador_id INTEGER REFERENCES Preparador(id),
+  repartidor_id INTEGER REFERENCES Repartidor(id)
+);
+
+CREATE TABLE ValeComida (
+  id SERIAL PRIMARY KEY,
+  codigo VARCHAR(50),
+  valor DECIMAL(6,2),
+  cliente_id INTEGER REFERENCES Cliente(id),
+  fecha_expiracion DATE,
+  usado BOOLEAN
+);
